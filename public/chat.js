@@ -133,6 +133,9 @@ msgInput.addEventListener("keypress", (e) => {
 let typingTimeout;
 
 msgInput.addEventListener("input", () => {
+  msgInput.style.height = "auto";
+  msgInput.style.height = msgInput.scrollHeight + "px";
+    
   socket.emit("typing", { username, room: roomName });
   
   clearTimeout(typingTimeout);

@@ -248,6 +248,10 @@ body {
   font-size: 15px;
   transition: 0.25s;
   font-family: inherit;
+  resize: none;
+  max-height: 120px;
+  overflow-y: auto;
+  line-height: 1.4;
 }
 
 #msgInput::placeholder {
