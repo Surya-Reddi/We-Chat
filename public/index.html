@@ -1,35 +1,64 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Chat App Test</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WE CHAT</title>
     <link rel="stylesheet" href="styles.css" />
 
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   </head>
+
   <body>
 
+    <!-- ------------------ APP TITLE ------------------ -->
+    <h1 class="app-title">WE CHAT</h1>
+
+    <!-- ------------------ LOGIN SCREEN ------------------ -->
     <div class="card" id="loginScreen">
-      <h2>Join Chat</h2>
+      <h2 class="section-title">Join Chat</h2>
+
       <input id="usernameInput" type="text" placeholder="Enter your username" />
-      <h4>Available Rooms:</h4>
+
+      <h3 class="sub-title">Available Rooms</h3>
       <ul id="roomList"></ul>
-      <input id="roomInput" type="text" placeholder="Enter room name" />
+
+      <input id="roomInput" type="text" placeholder="Enter room name or create new" />
       <button id="loginBtn">Join Room</button>
     </div>
 
-    <div class="card" id="chatScreen" style="display:none;">
-      <h3 id ="roomTitle"></h3>
-      <h4>Users in this room:</h4>
-      <ul id="activeUsers"></ul>
-      <div id="messages"></div>
-      <div class="messageInputRow">
-        <input id="msgInput" type="text" placeholder="Type a message..." />
-        <button id="sendBtn">➤</button>
+    <!-- ------------------ CHAT SCREEN ------------------ -->
+    <div class="card chat-card" id="chatScreen" style="display:none;">
+
+      <!-- Chat Header -->
+      <div class="chat-header">
+        <h2 class="section-title" id="roomTitle"></h2>
       </div>
-      <p id="typingStatus"></p>
+
+      <!-- Active Users -->
+      <div class="users-container">
+        <h3 class="sub-title">Active Users</h3>
+        <ul id="activeUsers"></ul>
+      </div>
+
+      <!-- Messages Area (Scrollable) -->
+      <div class="messages-wrapper">
+        <div id="messages"></div>
+      </div>
+
+      <!-- Input Area (Fixed Bottom) -->
+      <div class="input-container">
+        <p id="typingStatus"></p>
+        <div class="messageInputRow">
+          <input id="msgInput" type="text" placeholder="Type a message..." />
+          <button id="sendBtn">➤</button>
+        </div>
+      </div>
+
     </div>
-    
-    <!-- Load socket.io client -->
+
+    <!-- Socket -->
     <script src="/socket.io/socket.io.js"></script>
     <script src="chat.js"></script>
   </body>
