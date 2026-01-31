@@ -1,5 +1,5 @@
 export default (io) => {
-  const pool = require("../db/pool");
+  const pool = require("../db/pool").default;
 
   // In-memory room map: roomName → { users: [] }
   const rooms = {};
