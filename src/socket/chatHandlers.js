@@ -59,13 +59,25 @@ export default function chatHandlers(io) {
       }
     });
 
+
     // SEND MESSAGE
     socket.on("sendMessage", async ({ room, username, message }) => {
+      console.log("📩 sendMessage received", {
+    socketId: socket.id,
+    room,
+    username,
+    message
+  });
+
+  console.log("🧠 Rooms for this socket:", [...socket.rooms]);
+  
       try {
         await pool.query(
           "INSERT INTO chat_messages (room, username, message) VALUES ($1, $2, $3)",
           [room, username, message]
         );
+
+        console.log("📢 Emitting to room:", room);
 
         io.to(room).emit("receiveMessage", {
           username,
