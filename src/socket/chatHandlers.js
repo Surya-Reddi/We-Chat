@@ -1,4 +1,4 @@
-module.exports = (io) => {
+export default (io) => {
   const pool = require("../db/pool");
 
   // In-memory room map: roomName → { users: [] }
