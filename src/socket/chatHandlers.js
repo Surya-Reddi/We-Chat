@@ -1,12 +1,13 @@
-export default (io) => {
-  const pool = require("../db/pool").default;
+import pool from "../db/pool.js";
 
+export default function chatHandlers(io) {
   // In-memory room map: roomName → { users: [] }
   const rooms = {};
 
   io.on("connection", (socket) => {
     console.log("User connected:", socket.id);
 
+    // Send existing rooms
     socket.emit("roomList", Object.keys(rooms));
 
     // JOIN ROOM
@@ -19,28 +20,34 @@ export default (io) => {
         console.log(`${username} joined room: ${room}`);
 
         // Create room if not exists
-        if (!rooms[room]) rooms[room] = { users: [] };
+        if (!rooms[room]) {
+          rooms[room] = { users: [] };
+        }
 
         // Add user if not already present
         if (!rooms[room].users.includes(username)) {
           rooms[room].users.push(username);
         }
 
-        // Send updated user list to room
+        // Update users in room
         io.to(room).emit("roomUsers", rooms[room].users);
 
-        // Broadcast list of all active rooms
+        // Broadcast active rooms
         io.emit("roomList", Object.keys(rooms));
 
         // Fetch chat history
         const result = await pool.query(
-          "SELECT username, message, created_at FROM chat_messages WHERE room = $1 ORDER BY id ASC LIMIT 50",
+          `SELECT username, message, created_at
+           FROM chat_messages
+           WHERE room = $1
+           ORDER BY id ASC
+           LIMIT 50`,
           [room]
         );
 
         socket.emit("chatHistory", result.rows);
 
-        // Notify others in the room
+        // Notify others
         socket.to(room).emit("receiveMessage", {
           username: "Chat",
           message: `${username} joined the room`,
@@ -55,13 +62,11 @@ export default (io) => {
     // SEND MESSAGE
     socket.on("sendMessage", async ({ room, username, message }) => {
       try {
-        // Save to DB
         await pool.query(
           "INSERT INTO chat_messages (room, username, message) VALUES ($1, $2, $3)",
           [room, username, message]
         );
 
-        // Broadcast to room
         io.to(room).emit("receiveMessage", {
           username,
           message,
@@ -80,25 +85,21 @@ export default (io) => {
 
     // DISCONNECT
     socket.on("disconnect", () => {
-      const username = socket.data.username;
-      const room = socket.data.room;
+      const { username, room } = socket.data;
 
       if (username && room && rooms[room]) {
-        rooms[room].users = rooms[room].users.filter(u => u !== username);
+        rooms[room].users = rooms[room].users.filter(
+          (u) => u !== username
+        );
 
-        // Update room users
         io.to(room).emit("roomUsers", rooms[room].users);
 
-        // Delete room if empty
         if (rooms[room].users.length === 0) {
           delete rooms[room];
         }
 
-        // Broadcast updated room list
         io.emit("roomList", Object.keys(rooms));
-      }
 
-      if (username && room) {
         socket.to(room).emit("receiveMessage", {
           username: "Chat",
           message: `${username} left the room`,
@@ -109,4 +110,4 @@ export default (io) => {
       console.log("User disconnected:", socket.id);
     });
   });
-};
+}
