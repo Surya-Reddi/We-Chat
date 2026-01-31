@@ -32,11 +32,16 @@ const typingStatus = document.getElementById("typingStatus");
 const roomTitle    = document.getElementById("roomTitle");
 
 // User state
+let joined = false;
 let username = "";
 let roomName = "";
 
 
 // ------------------ ROOM LIST FROM SERVER ------------------
+socket.on("joinedRoom", ({ room }) => {
+  console.log("✅ Joined room:", room);
+  joined = true;
+});
 
 socket.on("roomList", (rooms) => {
   roomList.innerHTML = "";
@@ -119,6 +124,10 @@ socket.on("roomUsers", (users) => {
 // ------------------ SEND MESSAGE ------------------
 
 function sendMessage() {
+  if (!joined) {
+    console.warn("🚫 Message blocked: not joined yet");
+    return;
+  }
   const message = msgInput.value.trim();
   if (!message) return;
 

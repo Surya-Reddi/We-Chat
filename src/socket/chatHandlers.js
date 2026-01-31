@@ -57,6 +57,8 @@ export default function chatHandlers(io) {
       } catch (err) {
         console.error("Error in joinRoom:", err);
       }
+
+      socket.emit("joinedRoom", { room });
     });
 
 
@@ -70,7 +72,7 @@ export default function chatHandlers(io) {
   });
 
   console.log("🧠 Rooms for this socket:", [...socket.rooms]);
-  
+
       try {
         await pool.query(
           "INSERT INTO chat_messages (room, username, message) VALUES ($1, $2, $3)",
