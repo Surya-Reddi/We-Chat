@@ -19,7 +19,12 @@ app.use(express.static(path.join(__dirname, "../public")));
 // Socket.io
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: [
+      "https://we-chat-backend-3vqy.onrender.com",
+      "https://we-chat-lkz2w4vsp-surya-reddis-projects.vercel.app",        // 👈 your Vercel URL
+    ],
+    methods: ["GET", "POST"],
+    credentials: false
   },
 });
 

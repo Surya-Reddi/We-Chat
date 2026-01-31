@@ -1,6 +1,8 @@
 // ------------------ INITIAL SETUP ------------------
 
-const socket = io("https://we-chat-backend-3vqy.onrender.com"); // auto-connect to same origin
+const socket = io("https://we-chat-backend-3vqy.onrender.com",{
+  transports: ["websocket", "polling"]
+}); // auto-connect to same origin
 
 socket.on("connect", () => {
   console.log("✅ Connected to socket:", socket.id);
