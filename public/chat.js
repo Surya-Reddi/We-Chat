@@ -1,6 +1,15 @@
 // ------------------ INITIAL SETUP ------------------
 
-const socket = io(); // auto-connect to same origin
+const socket = io("https://we-chat-backend-3vqy.onrender.com"); // auto-connect to same origin
+
+socket.on("connect", () => {
+  console.log("✅ Connected to socket:", socket.id);
+});
+
+socket.on("connect_error", (err) => {
+  console.error("❌ Socket connection error:", err);
+});
+
 
 // Screens
 const loginScreen = document.getElementById("loginScreen");
